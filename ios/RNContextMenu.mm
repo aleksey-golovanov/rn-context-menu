@@ -29,7 +29,7 @@ using namespace facebook::react;
         [self addInteraction:contextInteraction];
     }
 
-  return self;
+    return self;
 }
 
 - (nullable UIContextMenuConfiguration *)contextMenuInteraction:(nonnull UIContextMenuInteraction *)interaction configurationForMenuAtLocation:(CGPoint)location API_AVAILABLE(ios(13.0)) {
@@ -39,7 +39,7 @@ using namespace facebook::react;
     const auto title = props.title;
 
     return [UIContextMenuConfiguration configurationWithIdentifier:nil previewProvider:nil actionProvider:^UIMenu * _Nullable(NSArray<UIMenuElement *> * _Nonnull suggestedActions) {
-        NSMutableArray* uiActions = [[NSMutableArray alloc] init];
+        NSMutableArray<UIAction *> *uiActions = [NSMutableArray arrayWithCapacity:actions.size()];
 
         for (size_t i = 0; i < actions.size(); ++i) {
             NSString *actionName = [NSString stringWithUTF8String:actions[i].title.c_str()];
