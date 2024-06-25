@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "declaration": true,
+      "outDir": "./js/dist",
+      "target": "ES6",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "strict": true,
+      "esModuleInterop": true,
+      "jsx": "react-native",
+      "skipLibCheck": true
+    },
+    "include": ["js/**/*.ts", "js/**/*.tsx"],
+    "exclude": ["node_modules"]
+}

@@ -1,4 +1,4 @@
-# rn-context-menu
+# Native iOS Context Menu for React Native
 
 Fabric Native Component wrapper for iOS [`UIContextMenuInteraction`](https://developer.apple.com/documentation/uikit/uicontextmenuinteraction). Currently does nothing on Android.
 

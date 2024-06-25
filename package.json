@@ -6,7 +6,7 @@
   "license": "MIT",
   "react-native": "js/index",
   "source": "js/index",
-  "main": "js/index.tsx",
+  "main": "js/dist/index",
   "files": [
     "js",
     "android",
@@ -29,7 +29,8 @@
   },
   "homepage": "https://github.com/aleksey-golovanov/rn-context-menu#readme",
   "devDependencies": {
-    "@types/react": "^18.3.3"
+    "@types/react": "^18.3.3",
+    "typescript": "^5.5.2"
   },
   "peerDependencies": {
     "react": "^18.3.1",
@@ -39,5 +40,8 @@
     "name": "RNContextMenuSpecs",
     "type": "components",
     "jsSrcsDir": "js"
+  },
+  "scripts": {
+    "build": "tsc"
   }
 }
