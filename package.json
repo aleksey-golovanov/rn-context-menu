@@ -1,12 +1,13 @@
 {
   "name": "@aleksei-golovanov/rn-context-menu",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "Context menu implementation for React Native",
   "author": "Aleksei Golovanov (https://github.com/aleksey-golovanov)",
   "license": "MIT",
   "react-native": "js/index",
   "source": "js/index",
   "main": "js/dist/index",
+  "types": "js/dist/index.ios.d.ts",
   "files": [
     "js",
     "android",
