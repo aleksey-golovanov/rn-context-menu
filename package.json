@@ -1,6 +1,6 @@
 {
   "name": "@aleksei-golovanov/rn-context-menu",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Context menu implementation for React Native",
   "author": "Aleksei Golovanov (https://github.com/aleksey-golovanov)",
   "license": "MIT",
