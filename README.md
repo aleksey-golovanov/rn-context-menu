@@ -1,3 +1,7 @@
+# rn-context-menu
+
+Fabric Native Component wrapper for iOS [`UIContextMenuInteraction`](https://developer.apple.com/documentation/uikit/uicontextmenuinteraction). Currently does nothing on Android.
+
 <img src="./assets/recording.gif" width="250">
 
 ## Usage
@@ -35,3 +39,15 @@ function App(): React.JSX.Element {
   );
 }
 ```
+
+## Props
+
+#### `title?: string`
+
+The title of the menu.
+
+#### `actions: { title: string; onPress?: () => void; iosSystemImageName?: string; }[]`
+
+- `title` action title
+- `onPress` action handler
+- `iosSystemImageName` [iOS system image](https://developer.apple.com/sf-symbols/)

@@ -20,7 +20,8 @@
   ],
   "keywords": [
     "react-native",
-    "ios"
+    "ios",
+    "context menu"
   ],
   "repository": "https://github.com/aleksey-golovanov/rn-context-menu",
   "bugs": {
