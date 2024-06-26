@@ -15,33 +15,41 @@ RCT_NEW_ARCH_ENABLED=1 bundle exec pod install
 ## Usage
 
 ```javascript
-import { ContextMenu } from "@aleksei-golovanov/rn-context-menu";
+const title = "Select what to do";
+
+const actions = [
+  {
+    title: "share",
+    onPress: () => console.log("shared"),
+    iosSystemImageName: "square.and.arrow.up",
+  },
+  {
+    title: "like",
+    onPress: () => console.log("liked"),
+    iosSystemImageName: "hand.thumbsup",
+  },
+];
+
+const DogCard = () => (
+  <View style={styles.container}>
+    <Image source={require("./dog.jpg")} style={styles.image} />
+    <Text style={styles.title}>DOG</Text>
+  </View>
+);
 
 function App(): React.JSX.Element {
   return (
     <SafeAreaView>
+      <ContextMenu title={title} actions={actions} style={styles.view}>
+        <DogCard />
+      </ContextMenu>
       <ContextMenu
-        title="Select what to do"
-        actions={[
-          {
-            title: "share",
-            onPress: () => {
-              console.log("shared");
-            },
-            iosSystemImageName: "square.and.arrow.up",
-          },
-          {
-            title: "like",
-            onPress: () => {
-              console.log("liked");
-            },
-            iosSystemImageName: "hand.thumbsup",
-          },
-        ]}
+        title={title}
+        actions={actions}
         style={styles.view}
+        preview={<DogCard />}
       >
-        <Image source={require("./dog.jpg")} style={styles.image} />
-        <Text style={styles.text}>DOG</Text>
+        <Text style={styles.text}>CUSTOM PREVIEW</Text>
       </ContextMenu>
     </SafeAreaView>
   );
@@ -59,3 +67,7 @@ The title of the menu.
 - `title` action title
 - `onPress` action handler
 - `iosSystemImageName` [iOS system image](https://developer.apple.com/sf-symbols/)
+
+#### `preview?: ReactElement<ViewProps>`
+
+Custom preview component

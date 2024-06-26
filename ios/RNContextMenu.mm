@@ -12,7 +12,9 @@ using namespace facebook::react;
 @interface RNContextMenu () <RCTRNContextMenuViewProtocol, UIContextMenuInteractionDelegate>
 @end
 
-@implementation RNContextMenu {}
+@implementation RNContextMenu {
+    UIView *_previewProvider;
+}
 
 + (ComponentDescriptorProvider)componentDescriptorProvider {
     return concreteComponentDescriptorProvider<RNContextMenuComponentDescriptor>();
@@ -34,11 +36,20 @@ using namespace facebook::react;
 
 - (nullable UIContextMenuConfiguration *)contextMenuInteraction:(nonnull UIContextMenuInteraction *)interaction configurationForMenuAtLocation:(CGPoint)location API_AVAILABLE(ios(13.0)) {
     const auto &props = *std::static_pointer_cast<RNContextMenuProps const>(_props);
-
+    
     const auto actions = props.actions;
     const auto title = props.title;
-
-    return [UIContextMenuConfiguration configurationWithIdentifier:nil previewProvider:nil actionProvider:^UIMenu * _Nullable(NSArray<UIMenuElement *> * _Nonnull suggestedActions) {
+    
+    return [UIContextMenuConfiguration configurationWithIdentifier:nil previewProvider: ^UIViewController * _Nullable {
+        if (self->_previewProvider == nil) {
+            return nil;
+        } else {
+            UIViewController *viewController = [[UIViewController alloc] init];
+            viewController.preferredContentSize = self->_previewProvider.frame.size;
+            viewController.view = self->_previewProvider;
+            return viewController;
+        }
+    } actionProvider:^UIMenu * _Nullable(NSArray<UIMenuElement *> * _Nonnull suggestedActions) {
         NSMutableArray<UIAction *> *uiActions = [NSMutableArray arrayWithCapacity:actions.size()];
 
         for (size_t i = 0; i < actions.size(); ++i) {
@@ -56,6 +67,18 @@ using namespace facebook::react;
 
         return [UIMenu menuWithTitle:[NSString stringWithUTF8String:title.c_str()] children:uiActions];
     }];
+}
+
+- (void)mountChildComponentView:(UIView<RCTComponentViewProtocol> *)childComponentView index:(NSInteger)index {
+    const auto &props = *std::static_pointer_cast<facebook::react::ViewProps const>(childComponentView.props);
+    const auto nativeId = props.nativeId;
+
+    if ([[NSString stringWithUTF8String:nativeId.c_str()] isEqual:@"preview-provider"]) {
+        _previewProvider = childComponentView;
+        return;
+    }
+
+    [super mountChildComponentView:childComponentView index:index];
 }
 
 @end
