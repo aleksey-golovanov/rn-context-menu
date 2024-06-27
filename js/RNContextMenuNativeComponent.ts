@@ -7,9 +7,16 @@ import codegenNativeComponent from "react-native/Libraries/Utilities/codegenNati
 
 export type ActionPressEvent = { index: Int32 };
 
+export type Action = {
+  title: string;
+  iosSystemImageName?: string;
+  disabled?: boolean;
+  destructive?: boolean;
+};
+
 export interface NativeProps extends ViewProps {
   title?: string;
-  actions: { title: string; iosSystemImageName?: string }[];
+  actions: Action[];
   onActionPress: DirectEventHandler<ActionPressEvent>;
 }
 

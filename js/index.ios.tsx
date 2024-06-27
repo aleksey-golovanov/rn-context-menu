@@ -1,16 +1,14 @@
 import React, { FC, ReactElement, ReactNode } from "react";
 import { View, ViewProps } from "react-native";
 
-import ContextMenuView from "./RNContextMenuNativeComponent";
+import ContextMenuView, { Action } from "./RNContextMenuNativeComponent";
+
+export type ContextMenuAction = Action & { onPress?: () => void };
 
 export type ContextMenuProps = {
   title?: string;
   preview?: ReactElement<ViewProps>;
-  actions: {
-    title: string;
-    onPress?: () => void;
-    iosSystemImageName?: string;
-  }[];
+  actions: ContextMenuAction[];
   children: ReactNode;
 };
 

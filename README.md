@@ -15,9 +15,14 @@ RCT_NEW_ARCH_ENABLED=1 bundle exec pod install
 ## Usage
 
 ```javascript
+import {
+  ContextMenu,
+  ContextMenuAction,
+} from "@aleksei-golovanov/rn-context-menu";
+
 const title = "Select what to do";
 
-const actions = [
+const actions: ContextMenuAction[] = [
   {
     title: "share",
     onPress: () => console.log("shared"),
@@ -27,6 +32,18 @@ const actions = [
     title: "like",
     onPress: () => console.log("liked"),
     iosSystemImageName: "hand.thumbsup",
+  },
+  {
+    title: "dislike",
+    onPress: () => console.log("disliked"),
+    iosSystemImageName: "hand.thumbsdown",
+    disabled: true,
+  },
+  {
+    title: "delete",
+    onPress: () => console.log("deleted"),
+    iosSystemImageName: "trash",
+    destructive: true,
   },
 ];
 
@@ -62,11 +79,17 @@ function App(): React.JSX.Element {
 
 The title of the menu.
 
-#### `actions: { title: string; onPress?: () => void; iosSystemImageName?: string; }[]`
+#### `actions: ContextMenuAction[]`
 
-- `title` action title
-- `onPress` action handler
-- `iosSystemImageName` [iOS system image](https://developer.apple.com/sf-symbols/)
+Menu actions
+
+#### ContextMenuAction
+
+`title: string;` action title \
+`onPress?: () => void;` action handler \
+`iosSystemImageName?: string;` [iOS system image](https://developer.apple.com/sf-symbols/) (SF Symbol) \
+`disabled?: boolean;` action is disabled \
+`destructive?: boolean;` action is [desctructive](https://developer.apple.com/documentation/uikit/uimenuelementattributes/uimenuelementattributesdestructive)
 
 #### `preview?: ReactElement<ViewProps>`
 

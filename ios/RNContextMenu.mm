@@ -62,6 +62,8 @@ using namespace facebook::react;
                 }
             }];
 
+            uiAction.attributes = (actions[i].destructive ? UIMenuElementAttributesDestructive : 0) | (actions[i].disabled ? UIMenuElementAttributesDisabled : 0);
+
             [uiActions addObject:uiAction];
         }
 
