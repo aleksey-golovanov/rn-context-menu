@@ -15,14 +15,17 @@ RCT_NEW_ARCH_ENABLED=1 bundle exec pod install
 ## Usage
 
 ```javascript
+import React from "react";
+import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
+
 import {
   ContextMenu,
-  ContextMenuAction,
+  Menu,
+  MenuAction,
+  SubMenu,
 } from "@aleksei-golovanov/rn-context-menu";
 
-const title = "Select what to do";
-
-const actions: ContextMenuAction[] = [
+const actions: MenuAction[] = [
   {
     title: "share",
     onPress: () => console.log("shared"),
@@ -47,6 +50,16 @@ const actions: ContextMenuAction[] = [
   },
 ];
 
+const submenu: SubMenu = {
+  displayInline: true,
+  children: [{ title: "edit", iosSystemImageName: "pencil" }],
+};
+
+const menu: Menu = {
+  title: "Select what to do",
+  children: [...actions, submenu],
+};
+
 const DogCard = () => (
   <View style={styles.container}>
     <Image source={require("./dog.jpg")} style={styles.image} />
@@ -57,15 +70,10 @@ const DogCard = () => (
 function App(): React.JSX.Element {
   return (
     <SafeAreaView>
-      <ContextMenu title={title} actions={actions} style={styles.view}>
+      <ContextMenu menu={menu} style={styles.view}>
         <DogCard />
       </ContextMenu>
-      <ContextMenu
-        title={title}
-        actions={actions}
-        style={styles.view}
-        preview={<DogCard />}
-      >
+      <ContextMenu menu={menu} style={styles.view} preview={<DogCard />}>
         <Text style={styles.text}>CUSTOM PREVIEW</Text>
       </ContextMenu>
     </SafeAreaView>
@@ -79,17 +87,24 @@ function App(): React.JSX.Element {
 
 The title of the menu.
 
-#### `actions: ContextMenuAction[]`
+#### `children: (MenuAction | SubMenu)[]`
 
-Menu actions
+Menu actions or sub-menus
 
-#### ContextMenuAction
+#### MenuAction
 
 `title: string;` action title \
 `onPress?: () => void;` action handler \
 `iosSystemImageName?: string;` [iOS system image](https://developer.apple.com/sf-symbols/) (SF Symbol) \
 `disabled?: boolean;` action is disabled \
 `destructive?: boolean;` action is [desctructive](https://developer.apple.com/documentation/uikit/uimenuelementattributes/uimenuelementattributesdestructive)
+
+#### SubMenu
+
+`title?: string;` submenu title \
+`iosSystemImageName?: string;` [iOS system image](https://developer.apple.com/sf-symbols/) (SF Symbol) \
+`displayInline?: boolean;` an [option](https://developer.apple.com/documentation/uikit/uimenuoptions/uimenuoptionsdisplayinline) indicating the menu displays inline with its parent menu instead of displaying as a submenu. \
+`children: (MenuAction | SubMenu)[]` submenu actions or sub-menus
 
 #### `preview?: ReactElement<ViewProps>`
 

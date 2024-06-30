@@ -5,18 +5,21 @@ import type {
 } from "react-native/Libraries/Types/CodegenTypes";
 import codegenNativeComponent from "react-native/Libraries/Utilities/codegenNativeComponent";
 
-export type ActionPressEvent = { index: Int32 };
-
-export type Action = {
-  title: string;
+export type UIMenuElement = {
+  id: Int32;
+  title?: string;
   iosSystemImageName?: string;
   disabled?: boolean;
   destructive?: boolean;
+  displayInline?: boolean;
+  children?: Int32[];
+  isSubMenu?: boolean;
 };
 
+export type ActionPressEvent = { index: Int32 };
+
 export interface NativeProps extends ViewProps {
-  title?: string;
-  actions: Action[];
+  menu: UIMenuElement[];
   onActionPress: DirectEventHandler<ActionPressEvent>;
 }
 

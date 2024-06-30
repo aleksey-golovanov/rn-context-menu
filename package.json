@@ -1,13 +1,13 @@
 {
   "name": "@aleksei-golovanov/rn-context-menu",
-  "version": "0.0.8",
+  "version": "0.1.1",
   "description": "Context menu implementation for React Native",
   "author": "Aleksei Golovanov (https://github.com/aleksey-golovanov)",
   "license": "MIT",
   "react-native": "js/index",
   "source": "js/index",
-  "main": "js/dist/index",
-  "types": "js/dist/index.ios.d.ts",
+  "main": "js/index",
+  "types": "js/index",
   "files": [
     "js",
     "android",
@@ -31,6 +31,10 @@
   "homepage": "https://github.com/aleksey-golovanov/rn-context-menu#readme",
   "devDependencies": {
     "@types/react": "^18.3.3",
+    "@types/tape": "^5.6.4",
+    "tap-spec": "^5.0.0",
+    "tape": "^5.8.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.2"
   },
   "peerDependencies": {
@@ -43,6 +47,7 @@
     "jsSrcsDir": "js"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --declaration",
+    "test": "find js/__tests__ -name '*.spec.ts' -print0 | xargs -0 tape -r ts-node/register | tap-spec"
   }
 }

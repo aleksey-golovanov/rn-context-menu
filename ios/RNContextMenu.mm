@@ -9,7 +9,12 @@
 
 using namespace facebook::react;
 
-@interface RNContextMenu () <RCTRNContextMenuViewProtocol, UIContextMenuInteractionDelegate>
+
+
+@interface RNContextMenu () <RCTRNContextMenuViewProtocol, UIContextMenuInteractionDelegate> {
+    @private
+    std::shared_ptr<const RNContextMenuProps> contextMenuProps;
+}
 @end
 
 @implementation RNContextMenu {
@@ -20,10 +25,51 @@ using namespace facebook::react;
     return concreteComponentDescriptorProvider<RNContextMenuComponentDescriptor>();
 }
 
++ (std::vector<RNContextMenuMenuStruct>::const_iterator)findMenuById:(const std::vector<RNContextMenuMenuStruct>&)menu id:(int)id {
+    return std::find_if(menu.begin(), menu.end(), [id](const RNContextMenuMenuStruct& item) {
+        return item.id == id;
+    });
+}
+
+- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
+{
+    contextMenuProps = std::static_pointer_cast<RNContextMenuProps const>(props);
+
+    [super updateProps:props oldProps:oldProps];
+}
+
+- (NSMutableArray<UIMenuElement *> *)getMenuElementsForChildren:(const std::vector<int> &)children {
+    NSMutableArray<UIMenuElement *> *uiMenuElements = [NSMutableArray arrayWithCapacity:children.size()];
+
+    for (size_t i = 0; i < children.size(); ++i) {
+        const auto &child = [RNContextMenu findMenuById:contextMenuProps->menu id:children[i]];
+
+        NSString *title = [NSString stringWithUTF8String:child->title.c_str()];
+        NSString *image = [NSString stringWithUTF8String:child->iosSystemImageName.c_str()];
+
+        if(child->isSubMenu) {
+            UIMenu *uiMenu = [UIMenu menuWithTitle:title image:nil identifier:nil options:child->displayInline ? UIMenuOptionsDisplayInline : 0 children:[self getMenuElementsForChildren:child->children]];
+
+            [uiMenuElements addObject:uiMenu];
+        } else {
+            UIAction *uiAction = [UIAction actionWithTitle:title image:[UIImage systemImageNamed:image] identifier:nil handler:^(__kindof UIAction * _Nonnull action) {
+                if (self->_eventEmitter != nullptr) {
+                    std::dynamic_pointer_cast<const facebook::react::RNContextMenuEventEmitter>(self->_eventEmitter)->onActionPress({.index = static_cast<int>(i)});
+                }
+            }];
+
+            uiAction.attributes = (child->destructive ? UIMenuElementAttributesDestructive : 0) | (child->disabled ? UIMenuElementAttributesDisabled : 0);
+
+            [uiMenuElements addObject:uiAction];
+        }
+    }
+
+    return uiMenuElements;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        static const auto defaultProps = std::make_shared<const RNContextMenuProps>();
-        _props = defaultProps;
+        contextMenuProps = std::static_pointer_cast<RNContextMenuProps const>(_props);
     }
 
     if (@available(iOS 13.0, *)) {
@@ -35,11 +81,11 @@ using namespace facebook::react;
 }
 
 - (nullable UIContextMenuConfiguration *)contextMenuInteraction:(nonnull UIContextMenuInteraction *)interaction configurationForMenuAtLocation:(CGPoint)location API_AVAILABLE(ios(13.0)) {
-    const auto &props = *std::static_pointer_cast<RNContextMenuProps const>(_props);
-    
-    const auto actions = props.actions;
-    const auto title = props.title;
-    
+    const auto rootMenu = contextMenuProps->menu[0];
+
+    const auto children = rootMenu.children;
+    const auto title = rootMenu.title;
+
     return [UIContextMenuConfiguration configurationWithIdentifier:nil previewProvider: ^UIViewController * _Nullable {
         if (self->_previewProvider == nil) {
             return nil;
@@ -50,24 +96,7 @@ using namespace facebook::react;
             return viewController;
         }
     } actionProvider:^UIMenu * _Nullable(NSArray<UIMenuElement *> * _Nonnull suggestedActions) {
-        NSMutableArray<UIAction *> *uiActions = [NSMutableArray arrayWithCapacity:actions.size()];
-
-        for (size_t i = 0; i < actions.size(); ++i) {
-            NSString *actionName = [NSString stringWithUTF8String:actions[i].title.c_str()];
-            NSString *actionImage = [NSString stringWithUTF8String:actions[i].iosSystemImageName.c_str()];
-
-            UIAction *uiAction = [UIAction actionWithTitle:actionName image:[UIImage systemImageNamed:actionImage] identifier:nil handler:^(__kindof UIAction * _Nonnull action) {
-                if (self->_eventEmitter != nullptr) {
-                    std::dynamic_pointer_cast<const facebook::react::RNContextMenuEventEmitter>(self->_eventEmitter)->onActionPress({.index =  static_cast<int>(i)});
-                }
-            }];
-
-            uiAction.attributes = (actions[i].destructive ? UIMenuElementAttributesDestructive : 0) | (actions[i].disabled ? UIMenuElementAttributesDisabled : 0);
-
-            [uiActions addObject:uiAction];
-        }
-
-        return [UIMenu menuWithTitle:[NSString stringWithUTF8String:title.c_str()] children:uiActions];
+        return [UIMenu menuWithTitle:[NSString stringWithUTF8String:title.c_str()] children:[self getMenuElementsForChildren:children]];
     }];
 }
 
